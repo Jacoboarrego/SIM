@@ -101,8 +101,10 @@ Este proyecto está listo para extenderse. Puedes mejorar la IA agregando un cha
 MONGO_URI=mongodb://127.0.0.1:27017/inventory
 PORT=5000
 JWT_SECRET=tu_jwt_secret
-DEEPSEEK_API_KEY=tu_api_key_secreta
-DEEPSEEK_API_URL=https://api.deepseek.example
+OPENROUTER_API_KEY=tu_openrouter_api_key
+OPENROUTER_API_URL=https://openrouter.ai/api/v1
+OPENROUTER_SITE_URL=http://localhost:5173
+OPENROUTER_APP_NAME=SIM_Inventory_System
 ```
 
 2. Instalar dependencias y arrancar:
@@ -123,7 +125,7 @@ npm run dev
 
 ```bash
 curl -i http://localhost:5000/api/health
-curl -i -X POST http://localhost:5000/api/deepseek -H "Content-Type: application/json" -d '{"prompt":"Dame recomendaciones de inventario"}'
+curl -i -X POST http://localhost:5000/api/deepseek/chat -H "Content-Type: application/json" -d '{"prompt":"Dame recomendaciones de inventario"}'
 ```
 
 ---
