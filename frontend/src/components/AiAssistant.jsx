@@ -67,12 +67,17 @@ function AiAssistant({ products }) {
         </div>
       </div>
 
-      <p>{recommendation}</p>
+      <div className="ai-summary-card">
+        <h4>Resumen rápido</h4>
+        <p>{recommendation}</p>
+      </div>
 
       <div className="ai-query">
+        <label htmlFor="ai-prompt">¿Qué quieres preguntar?</label>
         <textarea
+          id="ai-prompt"
           aria-label="Prompt para IA"
-          rows={3}
+          rows={4}
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
         />
@@ -82,13 +87,31 @@ function AiAssistant({ products }) {
           </button>
         </div>
         {error && <div className="error-text">{error}</div>}
-        {aiResponse && (
-          <div className="ai-response">
-            <h4>Respuesta IA</h4>
-            <pre>{typeof aiResponse === 'string' ? aiResponse : JSON.stringify(aiResponse, null, 2)}</pre>
-          </div>
-        )}
       </div>
+
+      {aiResponse && (
+        <div className="ai-response">
+          <div className="ai-response-header">
+            <h4>Respuesta IA</h4>
+            {aiResponse.fallback && <span className="tag warning">Modo local</span>}
+          </div>
+          <p>{aiResponse.text}</p>
+          {aiResponse.fallback && (
+            <div className="ai-fallback-details">
+              <strong>Detalles:</strong>
+              <p><strong>Prompt ingresado:</strong> {aiResponse.details.prompt}</p>
+              <p><strong>Resumen del inventario:</strong></p>
+              <pre>{aiResponse.details.inventorySummary}</pre>
+              <p><strong>Recomendaciones:</strong></p>
+              <ul>
+                {aiResponse.details.recommendations.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
     </article>
   );
 }

@@ -15,9 +15,15 @@ function summarizeInventory(inventorySummary = {}) {
   ];
 
   if (Array.isArray(inventorySummary.lowStock) && inventorySummary.lowStock.length > 0) {
-    lines.push(`Low stock items (${inventorySummary.lowStock.length}): ${inventorySummary.lowStock
-      .map((item) => item.name || item.product || item.id)
-      .join(', ')}`);
+    const lowStockItems = inventorySummary.lowStock
+      .map((item) => {
+        const name = item.name || item.product || item.id || 'item';
+        const qty = item.quantity != null ? ` (${item.quantity} unidad${item.quantity === 1 ? '' : 'es'})` : '';
+        return `${name}${qty}`;
+      })
+      .join(', ');
+
+    lines.push(`Low stock items: ${lowStockItems}`);
   }
 
   return lines.join('\n');
@@ -47,7 +53,20 @@ function generateFallbackResponse(payload = {}) {
   const inventorySummaryText = summarizeInventory(payload.inventorySummary);
   const promptText = payload.prompt || 'Dame recomendaciones de inventario.';
 
-  return `No se pudo conectar con el servicio de IA externo. Aquí tienes recomendaciones básicas basadas en tu inventario:\n\nPromp ingresado: ${promptText}\n\nResumen del inventario:\n${inventorySummaryText}\n\nRecomendaciones:\n- Revisa los niveles de stock más bajos y repón antes de que falten productos.\n- Observa productos con menos de 5 unidades y prioriza compras para ellos.\n- Si el valor total es bajo, considera ampliar el inventario con artículos de alta rotación.\n- Mantén un balance entre productos con alta demanda y stock disponible.`;
+  return {
+    text: `No se pudo conectar con el servicio de IA externo. Te brindo recomendaciones básicas basadas en tu inventario.`,
+    fallback: true,
+    details: {
+      prompt: promptText,
+      inventorySummary: inventorySummaryText,
+      recommendations: [
+        'Revisa los niveles de stock más bajos y repón antes de que falten productos.',
+        'Observa productos con menos de 5 unidades y prioriza compras para ellos.',
+        'Si el valor total es bajo, considera ampliar el inventario con artículos de alta rotación.',
+        'Mantén un balance entre productos con alta demanda y stock disponible.',
+      ],
+    },
+  };
 }
 
 /**
@@ -90,7 +109,10 @@ async function queryDeepSeek(payload = {}) {
       timeout: 15000,
     });
 
-    return formatDeepSeekResponse(response.data);
+    return {
+      text: formatDeepSeekResponse(response.data),
+      fallback: false,
+    };
   } catch (err) {
     console.error('DeepSeek request failed', err.response?.status, err.response?.data || err.message);
 
