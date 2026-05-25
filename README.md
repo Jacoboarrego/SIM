@@ -90,3 +90,49 @@ npm run dev
 ## Nota para estudiantes
 
 Este proyecto está listo para extenderse. Puedes mejorar la IA agregando un chat más avanzado, añadir validación adicional en el backend, o integrar una base de datos en la nube.
+
+---
+
+**Guía de despliegue rápida**
+
+1. Crear variables en tu entorno para el backend (ejemplo `backend/.env`):
+
+```
+MONGO_URI=mongodb://127.0.0.1:27017/inventory
+PORT=5000
+JWT_SECRET=tu_jwt_secret
+DEEPSEEK_API_KEY=tu_api_key_secreta
+DEEPSEEK_API_URL=https://api.deepseek.example
+```
+
+2. Instalar dependencias y arrancar:
+
+```bash
+# Backend
+cd backend
+npm install
+npm run dev
+
+# Frontend (otra terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+3. Pruebas rápidas (desde otra terminal):
+
+```bash
+curl -i http://localhost:5000/api/health
+curl -i -X POST http://localhost:5000/api/deepseek -H "Content-Type: application/json" -d '{"prompt":"Dame recomendaciones de inventario"}'
+```
+
+---
+
+**Contribuciones**
+
+- Por favor abre issues en GitHub para bugs o mejoras.
+- Incluye pruebas unitarias cuando agregues lógica crítica.
+
+**Contacto**
+
+- Jacobo Arrego <jacobod-arregocesa@unilibre.edu.co>
